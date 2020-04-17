@@ -1,0 +1,33 @@
+version: '3.2'
+services:
+
+  logstash:
+    container_name: logstash
+    hostname: logstash
+    image: docker.elastic.co/logstash/logstash:7.6.2
+    ports:
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    volumes:
+      - type: bind
+        source: ./logstash/config/logstash.yml
+        target: /usr/share/logstash/config/logstash.yml
+        read_only: true
+      - type: bind
+        source: ./logstash/pipeline/logstash.conf
+        target: /usr/share/logstash/pipeline/logstash.conf
+        read_only: true
+      - type: bind
+        source: ./logstash/logs
+        target: /usr/share/logstash/logs
+        read_only: true
+      - type: bind
+        source: ./logstash/utilities
+        target: /usr/share/logstash/utilities
+        read_only: true
+    extra_hosts:
+      - "kafka:16.214.65.51"
+
